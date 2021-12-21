@@ -19,48 +19,83 @@ class _BookingHistoryState extends State<BookingHistory> {
         title: Center(child: Text("Booking History")),
         backgroundColor: Color(0xff1f1b51),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HistoryForm()),
-                );
-              },
-              child: Card(
-                elevation: 6, // Change this
-                shadowColor: Colors.black26,
-                child: ListTile(
-                  leading: Image.asset(
-                    "assets/images/logo.png",
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text('User name'),
-                  subtitle: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(60), topLeft: Radius.circular(60)),
+          image: DecorationImage(
+            image: AssetImage("assets/images/background.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HistoryForm()),
+                  );
+                },
+                child: Card(
+                  elevation: 6, // Change this
+                  shadowColor: Colors.black26,
+                  child: ListTile(
+                    leading: Image.asset(
+                      "assets/images/h5.jpg",
+                      fit: BoxFit.cover,
+                    ),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Name'),
+                        Text('Money'),
+                      ],
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 18.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('check in date'),
-                          Text('check out date'),
+                          Text('Rating'),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Chip(
+                                padding: EdgeInsets.all(0),
+                                backgroundColor: Color(0xff1f1b51),
+                                label: Text('12/1/1',
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                              Chip(
+                                padding: EdgeInsets.all(0),
+                                backgroundColor: Color(0xff1f1b51),
+                                label: Text('12/2/2',
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
+                    ),
+                    trailing: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.arrow_forward_ios),
+                    ),
+                    isThreeLine: true,
+                    dense: true,
                   ),
-                  trailing: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(Icons.arrow_forward_ios),
-                  ),
-                  isThreeLine: true,
-                  dense: true,
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

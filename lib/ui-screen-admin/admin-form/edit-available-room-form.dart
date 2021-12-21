@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
-class AvailableRoomsForm extends StatefulWidget {
-  const AvailableRoomsForm({Key? key}) : super(key: key);
+
+class EditRoom extends StatefulWidget {
+  const EditRoom({Key? key}) : super(key: key);
 
   @override
-  _AvailableRoomsFormState createState() => _AvailableRoomsFormState();
+  _EditRoomState createState() => _EditRoomState();
 }
 
-class _AvailableRoomsFormState extends State<AvailableRoomsForm> {
+class _EditRoomState extends State<EditRoom> {
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text(" Add Room Details")),
+        title: Center(child: Text(" Edit Room Details")),
         backgroundColor: Color(0xff1f1b51),
       ),
       body: Container(
@@ -22,11 +23,26 @@ class _AvailableRoomsFormState extends State<AvailableRoomsForm> {
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topCenter,
-                colors: [Colors.black26, Colors.black12, Colors.black26])),
+                colors: [Colors.black26, Colors.black12, Colors.black38])),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  boxShadow: [BoxShadow(
+                      color: Colors.black26,
+                      offset: Offset(0.0, 2.0),
+                      blurRadius: 6.0
+                  )]
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30),),
+                child: Image(
+                  image: AssetImage('assets/images/h3.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
             SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -213,9 +229,9 @@ class _AvailableRoomsFormState extends State<AvailableRoomsForm> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ),            ],
         ),
       ),
-    );  }
+    );
+  }
 }
