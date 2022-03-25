@@ -1,8 +1,12 @@
 // ignore_for_file: dead_code
 
 import 'package:flutter/material.dart';
+import 'package:hotel_admin/Models/Booking.dart';
+import 'package:hotel_admin/services/api.dart';
+import 'package:page_transition/page_transition.dart';
 
 import 'admin-form/booking-history-form.dart';
+import 'admin-form/upcoming-booking-detail-form.dart';
 
 class BookingHistory extends StatefulWidget {
   const BookingHistory({Key? key}) : super(key: key);
@@ -12,6 +16,17 @@ class BookingHistory extends StatefulWidget {
 }
 
 class _BookingHistoryState extends State<BookingHistory> {
+  late Future<Booking> booking;
+  @override
+  void initState() {
+    // TODO: implement initState
+    booking = Api().getBooking("cbh762","history");
+    print(booking);
+    booking.then((value) => {
+      print(value)
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,82 +35,84 @@ class _BookingHistoryState extends State<BookingHistory> {
         backgroundColor: Color(0xff1f1b51),
       ),
       body: Container(
+
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(60), topLeft: Radius.circular(60)),
-          image: DecorationImage(
-            image: AssetImage("assets/images/background.jpg"),
-            fit: BoxFit.cover,
-          ),
+          gradient: LinearGradient(begin: Alignment.topCenter, colors: [
+            Colors.blueGrey,
+            Colors.white,
+          ]),
         ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HistoryForm()),
-                  );
-                },
-                child: Card(
-                  elevation: 6, // Change this
-                  shadowColor: Colors.black26,
-                  child: ListTile(
-                    leading: Image.asset(
-                      "assets/images/h5.jpg",
-                      fit: BoxFit.cover,
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: FutureBuilder<Booking>(
+            future: booking,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: snapshot.data?.data.length,
+                  itemBuilder: (context, index) {
+                    var bookings = snapshot.data?.data[index];
+
+                    return Column(
                       children: [
-                        Text('Name'),
-                        Text('Money'),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.topToBottom,
+                                  duration: Duration(seconds: 1),
+                                  reverseDuration: Duration(seconds: 1),
+                                  child: HistoryForm(booking: bookings),
+                                ),
+                                // MaterialPageRoute(builder: (context) => EditRoom()),
+                              );
+                            },
+                            child: Card(
+                              elevation: 6, // Change this
+                              shadowColor: Colors.black26,
+                              child: ListTile(
+                                leading: Image.asset(
+                                  "assets/images/logo.png",
+                                  fit: BoxFit.cover,
+                                ),
+                                title: Text(
+                                    bookings != null ? bookings.hotel_name : ""),
+                                subtitle: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(bookings != null
+                                            ? bookings.booking_id
+                                            : ""),
+                                        // Text(bookings != null ? bookings.price
+                                        //     .toString() : ""),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                trailing: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(Icons.edit),
+                                ),
+                                isThreeLine: true,
+                                dense: true,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 18.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Rating'),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Chip(
-                                padding: EdgeInsets.all(0),
-                                backgroundColor: Color(0xff1f1b51),
-                                label: Text('12/1/1',
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                              Chip(
-                                padding: EdgeInsets.all(0),
-                                backgroundColor: Color(0xff1f1b51),
-                                label: Text('12/2/2',
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    trailing: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.arrow_forward_ios),
-                    ),
-                    isThreeLine: true,
-                    dense: true,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+                    );
+                  },
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }),
       ),
     );
   }

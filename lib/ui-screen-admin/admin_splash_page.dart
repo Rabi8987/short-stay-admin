@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_admin/ui-screen-admin/admin-landing-page.dart';
+import 'package:hotel_admin/ui-screen-admin/welcome.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
-import 'admin-landing-page.dart';
+
+import 'admin-form/admin-login-page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -11,13 +15,29 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
+  void initState(){
     super.initState();
+    var session;
+    getSession().then((value) => session = value);
 
     Timer(
         Duration(seconds: 4),
-            () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LandingPage())));
+            () =>
+            {
+              if(session == true){
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LandingPage()))
+              }else
+                {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => Welcome()))
+                }
+            });
+  }
+
+  Future<bool?> getSession()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('session');
   }
 
   @override

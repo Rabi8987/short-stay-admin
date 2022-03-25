@@ -18,114 +18,115 @@ class _ContactAboutUsState extends State<ContactAboutUs> {
         backgroundColor: Color(0xff1f1b51),
       ),
       body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16, top: 32),
-            child: Column(
-              children: [
-                TextFormField(
-                  autofocus: false,
-                  // validator: (String value) {
-                  //   if (value.isEmpty) {
-                  //     return 'Please Enter Full Name';
-                  //   }
-                  //   return null;
-                  // },
-                  // onSaved: (value) {
-                  //   name = value;
-                  // },
-                  decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                      labelStyle: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff1f1b51)),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff1f1b51)))),
-                ),
-                SizedBox(height: 10.0),
-                TextFormField(
-                  autofocus: false,
-                  // validator: (String value) {
-                  //   if (value.isEmpty) {
-                  //     return 'Please Enter Full Name';
-                  //   }
-                  //   return null;
-                  // },
-                  // onSaved: (value) {
-                  //   name = value;
-                  // },
-                  decoration: InputDecoration(
-                      labelText: 'Email Address',
-                      labelStyle: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff1f1b51)),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff1f1b51)))),
-                ),
-                SizedBox(height: 10.0),
-                TextFormField(
-                  autofocus: false,
-                  // validator: (String value) {
-                  //   if (value.isEmpty) {
-                  //     return 'Please Enter Full Name';
-                  //   }
-                  //   return null;
-                  // },
-                  // onSaved: (value) {
-                  //   name = value;
-                  // },
-                  decoration: InputDecoration(
-                      labelText: 'Address Of Office',
-                      labelStyle: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff1f1b51)),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff1f1b51)))),
-                ),
-                SizedBox(height: 10.0),
-                TextFormField(
-                  keyboardType: TextInputType.multiline,
-                  minLines: 1,//Normal textInputField will be displayed
-                  maxLines: 5,
-                  autofocus: false,
-                  // validator: (String value) {
-                  //   if (value.isEmpty) {
-                  //     return 'Please Enter Full Name';
-                  //   }
-                  //   return null;
-                  // },
-                  // onSaved: (value) {
-                  //   name = value;
-                  // },
-                  decoration: InputDecoration(
-                      labelText: 'About Us',
-                      labelStyle: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff1f1b51)),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff1f1b51)))),
-                ),
-                SizedBox(height: 40.0),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: double.infinity,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(begin: Alignment.topCenter, colors: [
+                Colors.blueGrey,
+                Colors.white,
+              ])),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        keyboardType: TextInputType.text,
+                        autofocus: false,
 
-                ElevatedButton(
-                  // TODO: implement callback
-                  onPressed: () {},
-                  child: Text(
-                    'Submit',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white
-                    ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please Enter Phone Number';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Phone number',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        autofocus: false,
+
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please Enter Email';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Email Address',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        autofocus: false,
+
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please Enter Office Address';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Office address',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      TextFormField(
+                        keyboardType: TextInputType.text,
+                        autofocus: false,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please Enter About Us';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'About us',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 40.0),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width/1,
+                        child: ElevatedButton(
+                          // TODO: implement callback
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _formKey.currentState!.save();
+
+                            }
+                          },
+                          child: Text(
+                            'Submit',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
-
-              ],
-            ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

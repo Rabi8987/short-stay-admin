@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hotel_admin/Models/BookingDetails.dart';
+import 'package:hotel_admin/ui-screen-admin/admin-upcoming-booking-details-page.dart' as uiscreen;
 
-import 'edit-available-room-form.dart';
+import 'package:hotel_admin/services/api.dart';
 
 class UpComingbookingDetailsForm extends StatefulWidget {
-  const UpComingbookingDetailsForm({Key? key}) : super(key: key);
+  final BookingDetails? booking;
+
+  const UpComingbookingDetailsForm({Key? key, @required this.booking})
+      : super(key: key);
 
   @override
   _UpComingbookingDetailsFormState createState() =>
@@ -12,7 +18,95 @@ class UpComingbookingDetailsForm extends StatefulWidget {
 
 class _UpComingbookingDetailsFormState
     extends State<UpComingbookingDetailsForm> {
+  bool status = false;
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _checkinTimeController = TextEditingController();
+  final _checkinController = TextEditingController();
+  final _hoursController = TextEditingController();
+  final _paymentStatusController = TextEditingController();
+  final _paymentController = TextEditingController();
+  final _isAcController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget != null) {
+      _nameController.text = widget.booking?.user_name ?? "";
+      _checkinController.text = widget.booking?.checkin_date ?? "";
+      _checkinTimeController.text = widget.booking?.checkin_time ?? "";
+      _hoursController.text = widget.booking?.num_hours ?? "";
+      _paymentStatusController.text = widget.booking?.payment_status ?? "";
+      _paymentController.text = widget.booking?.price ?? "";
+      _isAcController.text = widget.booking?.is_ac ?? "";
+
+      if (widget.booking?.status != "") {
+        setState(() {
+          status = false;
+        });
+      } else {
+        setState(() {
+          status = true;
+        });
+      }
+    }
+    // TODO: implement initState
+    super.initState();
+  }
+
+  updateBooking(id, flag) {
+    print(id);
+    Future<bool> response = Api().updateBooking(id, flag);
+    response.then((value) => {
+          if(value == true)
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => uiscreen.BookingDetails()),
+              ),
+              Fluttertoast.showToast(
+                  msg: "Booking "+ flag,
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: flag == 'accepted' ? Color(0xff1f1b51) : Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0)
+            }
+        });
+  }
+
+  buttons() {
+    if (status) {
+      return [
+        ElevatedButton(
+          // TODO: implement callback
+          onPressed: () {
+            updateBooking(widget.booking?.id, "accepted");
+          },
+          child: Text(
+            'Accept Booking',
+            style: TextStyle(fontSize: 16, color: Colors.white),
+          ),
+        ),
+        ElevatedButton(
+          // TODO: implement callback
+          onPressed: () {
+            updateBooking(widget.booking?.id, "cancelled");
+
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.red),
+          ),
+          child: Text(
+            'Cancel Booking',
+            style: TextStyle(fontSize: 16, color: Colors.white),
+          ),
+        ),
+      ];
+    } else {
+      return [Text("")];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +119,10 @@ class _UpComingbookingDetailsFormState
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  colors: [Colors.black26, Colors.black12, Colors.black38])),
+              gradient: LinearGradient(begin: Alignment.topCenter, colors: [
+                Colors.blueGrey,
+                Colors.white,
+          ])),
           child: Column(
             children: [
               Container(
@@ -43,10 +138,8 @@ class _UpComingbookingDetailsFormState
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30),
                   ),
-                  child: Image(
-                    image: AssetImage('assets/images/h3.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+                  child: Image.network(widget.booking?.hotel_images ?? "",
+                      fit: BoxFit.cover),
                 ),
               ),
               Form(
@@ -55,316 +148,59 @@ class _UpComingbookingDetailsFormState
                   padding: const EdgeInsets.all(24.0),
                   child: Column(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(2),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10))
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.grey))),
-                            child: TextFormField(
-                              autofocus: false,
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return 'Please Enter Full Name';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   name = value;
-                              // },
-                              decoration: InputDecoration(
-                                  hintText: 'Customer Name',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff1f1b51)),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff1f1b51)))),
-                            ),
-                          ),
+                      TextFormField(
+                        autofocus: false,
+                        controller: _nameController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'Customer Name',
+                          border: OutlineInputBorder(),
                         ),
                       ),
                       SizedBox(height: 10.0),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(2),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10))
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.grey))),
-                            child: TextFormField(
-                              autofocus: false,
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return 'Please Enter Full Name';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   name = value;
-                              // },
-                              decoration: InputDecoration(
-                                  hintText: 'Booking Time',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff1f1b51)),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff1f1b51)))),
-                            ),
+                      TextFormField(
+                        autofocus: false,
+                        controller: _hoursController,
+                        readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'Hours of stay',
+                            border: OutlineInputBorder(),
                           ),
+                      ),
+                      SizedBox(height: 10.0),
+                      TextFormField(
+                        autofocus: false,
+                        controller: _isAcController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'Air Condition',
+                          border: OutlineInputBorder(),
                         ),
                       ),
                       SizedBox(height: 10.0),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(2),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10))
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.grey))),
-                            child: TextFormField(
-                              autofocus: false,
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return 'Please Enter Full Name';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   name = value;
-                              // },
-                              decoration: InputDecoration(
-                                  hintText: 'Hours of Stay',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff1f1b51)),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff1f1b51)))),
-                            ),
-                          ),
+                      TextFormField(
+                        autofocus: false,
+                        controller: _paymentController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'Collectible Amount',
+                          border: OutlineInputBorder(),
                         ),
                       ),
                       SizedBox(height: 10.0),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(2),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10))
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.grey))),
-                            child: TextFormField(
-                              autofocus: false,
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return 'Please Enter Full Name';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   name = value;
-                              // },
-                              decoration: InputDecoration(
-                                  hintText: 'Booking Date',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff1f1b51)),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff1f1b51)))),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(2),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10))
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.grey))),
-                            child: TextFormField(
-                              autofocus: false,
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return 'Please Enter Full Name';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   name = value;
-                              // },
-                              decoration: InputDecoration(
-                                  hintText: 'A/C On/Off',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff1f1b51)),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff1f1b51)))),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(2),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10))
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.grey))),
-                            child: TextFormField(
-                              autofocus: false,
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return 'Please Enter Full Name';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   name = value;
-                              // },
-                              decoration: InputDecoration(
-                                  hintText: 'Collectable Amount',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff1f1b51)),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff1f1b51)))),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(2),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10))
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.grey))),
-                            child: TextFormField(
-                              autofocus: false,
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return 'Please Enter Full Name';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   name = value;
-                              // },
-                              decoration: InputDecoration(
-                                  hintText: 'Check In',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff1f1b51)),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff1f1b51)))),
-                            ),
-                          ),
+                      TextFormField(
+                        autofocus: false,
+                        controller: _checkinController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'Check in',
+                          border: OutlineInputBorder(),
                         ),
                       ),
                       SizedBox(height: 40.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ElevatedButton(
-                            // TODO: implement callback
-                            onPressed: () {},
-                            child: Text(
-                              'Accept Booking',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                          ),
-                          ElevatedButton(
-                            // TODO: implement callback
-                            onPressed: () {},
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(Colors.red),
-                            ),
-                            child: Text(
-                              'Cancel Booking',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                          ),
-                        ],
+                        children: buttons(),
                       ),
                     ],
                   ),

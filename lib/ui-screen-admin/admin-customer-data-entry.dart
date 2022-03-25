@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CustomerEntry extends StatefulWidget {
@@ -28,7 +27,7 @@ class _CustomerEntryState extends State<CustomerEntry> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text(" Edit Room Details")),
+        title: Center(child: Text(" Add Customer Details")),
         backgroundColor: Color(0xff1f1b51),
       ),
       body: SingleChildScrollView(
@@ -37,7 +36,10 @@ class _CustomerEntryState extends State<CustomerEntry> {
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
-                  colors: [Colors.black26, Colors.black12, Colors.black38])),
+                  colors: [
+                    Colors.blueGrey,
+                    Colors.white,
+                  ])),
           child: Column(
             children: [
               Form(
@@ -375,6 +377,7 @@ class _CustomerEntryState extends State<CustomerEntry> {
                       ),
                       SizedBox(height: 10.0),
                       Container(
+                        width: double.infinity,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(2),
@@ -386,36 +389,21 @@ class _CustomerEntryState extends State<CustomerEntry> {
                             ]),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.grey))),
-                            child: TextFormField(
-                              autofocus: false,
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return 'Please Enter Full Name';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   name = value;
-                              // },
-                              decoration: InputDecoration(
-                                  hintText: 'CNIC Pic Front',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff1f1b51)),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff1f1b51)))),
+                          child: GestureDetector(
+                            onTap:getImage,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(color: Colors.grey))),
+                              child: Text('Cnic Front Imgae')
+
                             ),
                           ),
                         ),
                       ),
                       SizedBox(height: 10.0),
                       Container(
+                        width: double.infinity,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(2),
@@ -427,31 +415,14 @@ class _CustomerEntryState extends State<CustomerEntry> {
                             ]),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
+                          child: GestureDetector(
+                            onTap:getImage,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(color: Colors.grey))),
+                                child: Text('Cnic Back Imgae')
 
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Colors.grey))),
-                            child: TextFormField(
-                              autofocus: false,
-                              // validator: (String value) {
-                              //   if (value.isEmpty) {
-                              //     return 'Please Enter Full Name';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   name = value;
-                              // },
-                              decoration: InputDecoration(
-                                  hintText: 'CNIC Pic Back',
-                                  hintStyle: TextStyle(
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff1f1b51)),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff1f1b51)))),
                             ),
                           ),
                         ),
