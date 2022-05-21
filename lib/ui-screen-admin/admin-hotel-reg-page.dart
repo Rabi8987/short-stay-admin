@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hotel_admin/Models/HotelDetails.dart';
 import 'package:hotel_admin/services/api.dart';
 import 'admin-form/admin-login-page.dart';
@@ -16,7 +18,9 @@ class HotelRegister extends StatefulWidget {
   _HotelRegisterState createState() => _HotelRegisterState();
 }
 
-class _HotelRegisterState extends State<HotelRegister> {
+class _HotelRegisterState extends State<HotelRegister>  with TickerProviderStateMixin {
+  bool status = false;
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController _hotelNameController = TextEditingController();
   TextEditingController _hotelLandLineController = TextEditingController();
@@ -39,6 +43,9 @@ class _HotelRegisterState extends State<HotelRegister> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
+        setState(() {
+          status = true;
+        });
         var request = http.MultipartRequest(
             'POST', Uri.parse('https://admin.shortstay.pk/add-hotel'));
         request.fields.addAll({
@@ -69,224 +76,264 @@ class _HotelRegisterState extends State<HotelRegister> {
         if (jsonData['status'] == true) {
           Navigator.pop(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => LandingPage()),
           );
+        }else{
+          setState(() {
+            status = false;
+          });
+    Fluttertoast.showToast(
+    msg: "Something went wrong",
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    timeInSecForIosWeb: 1,
+    backgroundColor: Colors.red,
+    textColor: Colors.white,
+    fontSize: 16.0);
         }
       } catch (e) {
+    setState(() {
+    status = false;
+    });
+    Fluttertoast.showToast(
+    msg: "Something went wrong",
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    timeInSecForIosWeb: 1,
+    backgroundColor: Colors.red,
+    textColor: Colors.white,
+    fontSize: 16.0);
         print(e.toString());
       }
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text("Form Of Hotel")),
-        backgroundColor: Color(0xff1f1b51),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(begin: Alignment.topCenter, colors: [
-            Colors.blueGrey,
-            Colors.white,
-          ])),
-          child: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: [
-                  TextFormField(
-                    keyboardType: TextInputType.text,
-                    controller: _hotelNameController,
-                    autofocus: false,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter name';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _hotelNameController.text = value!;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Hotel name',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  TextFormField(
-                    keyboardType: TextInputType.phone,
-                    controller: _hotelLandLineController,
-                    autofocus: false,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter number';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _hotelLandLineController.text = value!;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Hotel landline',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  TextFormField(
-                    keyboardType: TextInputType.streetAddress,
-                    controller: _hotelAddressController,
-                    autofocus: false,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter address';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _hotelAddressController.text = value!;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'hotel address',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  TextFormField(
-                    keyboardType: TextInputType.name,
-                    controller: _hotelOwnerNameController,
-                    autofocus: false,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter name';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _hotelOwnerNameController.text = value!;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Owner name',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: _hotelOwnerNicController,
-                    autofocus: false,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter NIC';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _hotelOwnerNicController.text = value!;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Owner NIC',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  TextFormField(
-                    keyboardType: TextInputType.phone,
-                    controller: _hotelOwnerNumberController,
-                    autofocus: false,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter number';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _hotelOwnerNumberController.text = value!;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Owner mobile number',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  TextFormField(
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
-                    controller: _hotelPasswordController,
-                    autofocus: false,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter password';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _hotelPasswordController.text = value!;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  TextFormField(
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
-                    controller: _hotelConfirmPasswordController,
-                    autofocus: false,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter confirm password';
-                      }
-                      if (value != _hotelPasswordController.text) {
-                        return 'Password does not match';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _hotelConfirmPasswordController.text = value!;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Confirm passowrd',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 1,
-                    child: OutlinedButton.icon(
-                      onPressed: getImage,
-                      icon: Icon(Icons.add, size: 18),
-                      label: Text(
-                        "Hotel Image",
-                        style: TextStyle(color: Color(0xff1f1b51)),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 1,
-                    child: ElevatedButton(
-                      // TODO: implement callback
-                      onPressed: () {
-                        addHotel();
+  screenData() {
+    if (status) {
+      return Padding(
+        padding: const EdgeInsets.all(64.0),
+        child: Center(
+            child: SpinKitFadingCircle(
+              color: Color(0xff1f1b51),
+              size: 50.0,
+              controller: AnimationController(
+                  vsync: this, duration: const Duration(milliseconds: 1200)),
+            )),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Center(child: Text("Form Of Hotel")),
+          backgroundColor: Color(0xff1f1b51),
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(begin: Alignment.topCenter, colors: [
+                  Colors.blueGrey,
+                  Colors.white,
+                ])),
+            child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      keyboardType: TextInputType.text,
+                      controller: _hotelNameController,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter name';
+                        }
+                        return null;
                       },
-                      child: Text(
-                        'Register Hotel',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      onSaved: (value) {
+                        _hotelNameController.text = value!;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Hotel name',
+                        border: OutlineInputBorder(),
                       ),
                     ),
-                  )
-                ],
+                    SizedBox(height: 10.0),
+                    TextFormField(
+                      keyboardType: TextInputType.phone,
+                      controller: _hotelLandLineController,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter number';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _hotelLandLineController.text = value!;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Hotel landline',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    TextFormField(
+                      keyboardType: TextInputType.streetAddress,
+                      controller: _hotelAddressController,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter address';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _hotelAddressController.text = value!;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'hotel address',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    TextFormField(
+                      keyboardType: TextInputType.name,
+                      controller: _hotelOwnerNameController,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter name';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _hotelOwnerNameController.text = value!;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Owner name',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: _hotelOwnerNicController,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter NIC';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _hotelOwnerNicController.text = value!;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Owner NIC',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    TextFormField(
+                      keyboardType: TextInputType.phone,
+                      controller: _hotelOwnerNumberController,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter number';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _hotelOwnerNumberController.text = value!;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Owner mobile number',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      controller: _hotelPasswordController,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _hotelPasswordController.text = value!;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      controller: _hotelConfirmPasswordController,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter confirm password';
+                        }
+                        if (value != _hotelPasswordController.text) {
+                          return 'Password does not match';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _hotelConfirmPasswordController.text = value!;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Confirm passowrd',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 1,
+                      child: OutlinedButton.icon(
+                        onPressed: getImage,
+                        icon: Icon(Icons.add, size: 18),
+                        label: Text(
+                          "Hotel Image",
+                          style: TextStyle(color: Color(0xff1f1b51)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 1,
+                      child: ElevatedButton(
+                        // TODO: implement callback
+                        onPressed: () {
+                          addHotel();
+                        },
+                        child: Text(
+                          'Register Hotel',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return screenData();
   }
 }

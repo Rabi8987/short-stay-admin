@@ -38,7 +38,6 @@ dependencies:
   pull_to_refresh: ^2.0.0
   multiselect: ^0.0.4
   simple_animations: ^4.0.1
-  onesignal_flutter: ^3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
